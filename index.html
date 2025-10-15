@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Для тебя 💖</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 10;
+      margin: 20px 0;
+    }
+
+    .message {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 30px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.4;
+    }
+
+    .next-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 5px;
+    }
+
+    .next-btn:hover {
+      background: #ff5252;
+      transform: scale(1.05);
+    }
+
+    .hug-btn {
+      background: #ff9ff3;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 5px;
+    }
+
+    .hug-btn:hover {
+      background: #f368e0;
+      transform: scale(1.05);
+    }
+
+    .timer, .messages-counter, .constellation, .jokes-section, .revelations {
+      font-size: 16px;
+      color: #666;
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff9f9;
+      border-radius: 10px;
+      border: 1px solid #ffe6e6;
+      line-height: 1.6;
+    }
+
+    .timer-line {
+      margin: 3px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .timer-numbers {
+      font-weight: bold;
+      color: #ff6b6b;
+      font-size: 17px;
+    }
+
+    .heart {
+      color: #ff6b6b;
+      font-size: 30px;
+      margin: 10px;
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hug-effect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+      animation: hugPulse 2s ease-out;
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .timer-title, .section-title {
+      font-size: 18px;
+      color: #ff6b6b;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .messages-number {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff6b6b;
+      margin: 10px 0;
+    }
+
+    .messages-comparison {
+      font-style: italic;
+      color: #888;
+      margin: 10px 0;
+    }
+
+    .constellation-sky {
+      position: relative;
+      height: 120px;
+      background: #0a0a2a;
+      border-radius: 10px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+      cursor: pointer;
+    }
+
+    .star:hover::after {
+      content: attr(data-date);
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .revelation-heart {
+      font-size: 24px;
+      cursor: pointer;
+      margin: 5px;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+
+    .revelation-heart:hover {
+      transform: scale(1.3);
+    }
+
+    .revelation-text {
+      margin-top: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #ff6b6b;
+      display: none;
+    }
+
+    .joke-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f8f8f8;
+      border-radius: 8px;
+      border-left: 4px solid #ff6b6b;
+    }
+
+    @keyframes hugPulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    @keyframes countUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .pulse {
+      animation: pulse 1s ease-in-out;
+    }
+
+    .count-up {
+      animation: countUp 0.5s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="message" id="message">Доброе утро, солнышко моё ❣️🫶</div>
+    
+    <div>
+      <button class="hug-btn" id="hugBtn">🤗 Обнять меня!</button>
+      <button class="next-btn" id="nextBtn">Далее</button>
+    </div>
+    
+    <!-- Таймер отношений -->
+    <div class="timer" id="timer">
+      <div class="timer-title">💝 Наше время вместе:</div>
+      <div class="timer-line">
+        <span>Месяцев:</span>
+        <span class="timer-numbers" id="months">0</span>
+      </div>
+      <div class="timer-line">
+        <span>Дней:</span>
+        <span class="timer-numbers" id="days">0</span>
+      </div>
+      <div class="timer-line">
+        <span>Часов:</span>
+        <span class="timer-numbers" id="hours">0</span>
+      </div>
+      <div class="timer-line">
+        <span>Минут:</span>
+        <span class="timer-numbers" id="minutes">0</span>
+      </div>
+      <div class="timer-line">
+        <span>Секунд:</span>
+        <span class="timer-numbers" id="seconds">0</span>
+      </div>
+    </div>
+
+    <!-- Счетчик сообщений -->
+    <div class="messages-counter" id="messagesCounter" style="display: none;">
+      <div class="section-title">💌Кстати, наша переписка:</div>
+      <div class="messages-number" id="messagesNumber">0</div>
+      <div class="messages-comparison" id="messagesComparison"></div>
+    </div>
+
+    <!-- Созвездие любви -->
+    <div class="constellation" id="constellation" style="display: none;">
+      <div class="section-title">🌟 Наше с тобой созвездие любви</div>
+      <div class="constellation-sky" id="constellationSky"></div>
+    </div>
+
+    <!-- Поляна откровений -->
+    <div class="revelations" id="revelations" style="display: none;">
+      <div class="section-title">🌷 Поляна откровений</div>
+      <div>Нажми на сердечко 💖</div>
+      <div>
+        <span class="revelation-heart" onclick="showRevelation(0)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(1)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(2)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(3)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(4)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(5)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(6)">💖</span>
+        <span class="revelation-heart" onclick="showRevelation(7)">💖</span>
+      </div>
+      <div class="revelation-text" id="revelationText"></div>
+    </div>
+
+    <!-- Внутренние шутки -->
+    <div class="jokes-section" id="jokesSection" style="display: none;">
+      <div class="section-title">😄 Наше всё</div>
+      <div class="joke-item" id="joke1"></div>
+      <div class="joke-item" id="joke2"></div>
+      <div class="joke-item" id="joke3"></div>
+    </div>
+  </div>
+
+  <script>
+    // Дата начала отношений (ЗАМЕНИ НА СВОЮ ДАТУ!)
+    const startDate = new Date('2025-01-01'); // Формат: 'ГОД-МЕСЯЦ-ДЕНЬ'
+
+    const messages = [
+      "Доброе утро, солнышко моё ❣️🫶",
+      "Я наверняка ещё сплю, но всё равно думаю только о тебе) Даже во сне 😍",
+      "И проснусь я, кстати, тоже с мыслями только о тебе ❤️🔥",
+      "Хочу пожелать тебе отличного дня ❤️ (Там внизу кое-что появилось)",
+      "Помни, что я всегда рядышком 💕",
+      "Очень горжусь тобой и сильно-сильно люблю 🫶❤️ (Там снизу что-то появилось)",  
+      "Кстати, ты сегодня невероятно красивый 🥰 Да-да, твоя улыбка сейчас тоже очень красивая, я всё вижу ☺️ (там снова внизу что-то появилось)",
+      "Целую тебя крепко-крепко! 😘 (снизу — наше всё)",
+      "Счастье моё, люблю тебя больше всего на свете! 💝"
+    ];
+
+    // Комплименты для поляны откровений
+    const revelations = [
+      "Твои глаза - как самые настоящие звезды в ночном небе ✨",
+      "Твоя улыбка всегда повышает мне настроение 🌞",
+      "Я счастлив просто от того, что ты есть 💝",
+      "Ты всегда вдохновляешь меня становиться лучше 🚀",
+      "Рядом с тобой время останавливается ⏰",
+      "Ты - самое лучшее, что случилось в моей жизни 🎁",
+      "Мне нравится каждая твоя черточка 🥰",
+      "Ты моё самое настоящее счастье 🌸"
+    ];
+
+    // Внутренние шутки (ЗАМЕНИ НА СВОИ)
+    const jokes = [
+      "Помнишь, как нас с тобой засняла камера на ПВЗ? И я потом оперативно менял пароль от аккаунта, чтобы мама ничего не увидела)",
+      "А тот раз, когда мы застряли в лесу на машине?", 
+      "Как же смешно было, когда приехал трактор в самый неподходящий момент...",
+      "А как мы с тобой впервые увидели номер в Москве, в котором будем жить?",
+      "А как мы искали твою курилку ночью в Ханинеевке?"
+    ];
+
+    // Важные даты для созвездия (ЗАМЕНИ НА СВОИ)
+    const importantDates = [
+      {date: "Первая встреча", x: 20, y: 30},
+      {date: "Первый поцелуй", x: 70, y: 20},
+      {date: "Поездка в Москву", x: 40, y: 60},
+      {date: "Выступление на 8 марта", x: 60, y: 80},
+      {date: "Первая совместная ночь", x: 80, y: 50},
+      {date: "Первая прогулка", x: 50, y: 40},
+      {date: "Концерт HolidayBoy", x: 50, y: 40}
+    ];
+
+    let currentMessage = 0;
+    const messageElement = document.getElementById('message');
+    const nextButton = document.getElementById('nextBtn');
+    const hugButton = document.getElementById('hugBtn');
+
+    // Функция для расчета времени отношений
+    function calculateRelationshipTime() {
+      const now = new Date();
+      const diff = now - startDate;
+      
+      let months = 0;
+      let tempDate = new Date(startDate);
+      
+      while (tempDate <= now) {
+        tempDate.setMonth(tempDate.getMonth() + 1);
+        if (tempDate <= now) {
+          months++;
+        }
+      }
+      
+      const lastMonthDate = new Date(startDate);
+      lastMonthDate.setMonth(lastMonthDate.getMonth() + months);
+      
+      const daysDiff = now - lastMonthDate;
+      const days = Math.floor(daysDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((daysDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((daysDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((daysDiff % (1000 * 60)) / 1000);
+      
+      return { months, days, hours, minutes, seconds };
+    }
+
+    // Функция для обновления таймера
+    function updateRelationshipTimer() {
+      const time = calculateRelationshipTime();
+      
+      document.getElementById('months').textContent = time.months;
+      document.getElementById('days').textContent = time.days;
+      document.getElementById('hours').textContent = time.hours.toString().padStart(2, '0');
+      document.getElementById('minutes').textContent = time.minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').textContent = time.seconds.toString().padStart(2, '0');
+      
+      document.getElementById('seconds').classList.add('pulse');
+      setTimeout(() => {
+        document.getElementById('seconds').classList.remove('pulse');
+      }, 500);
+    }
+
+    // Функция для анимации счетчика сообщений
+    function animateMessagesCounter() {
+      const finalNumber = 78865;
+      const element = document.getElementById('messagesNumber');
+      const comparisonElement = document.getElementById('messagesComparison');
+      
+      let current = 0;
+      const increment = finalNumber / 50;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= finalNumber) {
+          current = finalNumber;
+          clearInterval(timer);
+          element.classList.add('count-up');
+          
+          // Добавляем сравнения
+          comparisonElement.innerHTML = `
+            Это ${Math.floor(finalNumber/25000)} романа «Война и мир» 📚<br>
+            Хватило бы на ${Math.floor(finalNumber/5000)} диссертаций 🎓
+          `;
+        }
+        element.textContent = Math.floor(current).toLocaleString();
+      }, 50);
+    }
+
+    // Функция для создания созвездия
+    function createConstellation() {
+      const sky = document.getElementById('constellationSky');
+      importantDates.forEach((star, index) => {
+        const starElement = document.createElement('div');
+        starElement.className = 'star';
+        starElement.style.width = '8px';
+        starElement.style.height = '8px';
+        starElement.style.left = star.x + '%';
+        starElement.style.top = star.y + '%';
+        starElement.style.animationDelay = (index * 0.5) + 's';
+        starElement.setAttribute('data-date', star.date);
+        sky.appendChild(starElement);
+      });
+    }
+
+    // Функция для показа комплимента
+    function showRevelation(index) {
+      const textElement = document.getElementById('revelationText');
+      textElement.textContent = revelations[index];
+      textElement.style.display = 'block';
+      
+      // Создаем летающее сердечко
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '💖';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.top = '100vh';
+      heart.style.fontSize = '25px';
+      heart.style.animation = `floatUp ${Math.random() * 3 + 2}s linear forwards`;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    // Функция для показа шуток
+    function showJokes() {
+      jokes.forEach((joke, index) => {
+        document.getElementById(`joke${index + 1}`).textContent = joke;
+      });
+    }
+
+    // Функция для эффекта объятий
+    function createHugEffect() {
+      const hugEffect = document.createElement('div');
+      hugEffect.className = 'hug-effect';
+      document.querySelector('.container').appendChild(hugEffect);
+      
+      setTimeout(() => {
+        hugEffect.remove();
+      }, 2000);
+      
+      for (let i = 0; i < 15; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'heart';
+          heart.innerHTML = '💖';
+          heart.style.left = Math.random() * 100 + 'vw';
+          heart.style.top = Math.random() * 100 + 'vh';
+          heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
+          heart.style.animation = `floatUp ${Math.random() * 3 + 2}s linear forwards`;
+          document.body.appendChild(heart);
+          
+          setTimeout(() => heart.remove(), 5000);
+        }, i * 100);
+      }
+      
+      messageElement.style.opacity = '0';
+      setTimeout(() => {
+        messageElement.innerHTML = '🤗 Чувствуешь мои объятия?<br>Я крепко-крепко тебя обнимаю! 💕';
+        messageElement.style.opacity = '1';
+        
+        setTimeout(() => {
+          messageElement.style.opacity = '0';
+          setTimeout(() => {
+            messageElement.innerHTML = messages[currentMessage];
+            messageElement.style.opacity = '1';
+          }, 300);
+        }, 3000);
+      }, 300);
+    }
+
+    // Обработчик кнопки "Далее"
+    nextButton.addEventListener('click', function() {
+      currentMessage++;
+      if (currentMessage < messages.length) {
+        messageElement.style.opacity = '0';
+        setTimeout(() => {
+          messageElement.innerHTML = messages[currentMessage];
+          messageElement.style.opacity = '1';
+        }, 300);
+        
+        // Показываем новые секции на определенных сообщениях
+        if (currentMessage === 3) {
+          document.getElementById('messagesCounter').style.display = 'block';
+          setTimeout(animateMessagesCounter, 500);
+        } else if (currentMessage === 5) {
+          document.getElementById('constellation').style.display = 'block';
+          createConstellation();
+        } else if (currentMessage === 6) {
+          document.getElementById('revelations').style.display = 'block';
+        } else if (currentMessage === 7) {
+          document.getElementById('jokesSection').style.display = 'block';
+          showJokes();
+        }
+      } else {
+        messageElement.innerHTML = 'Хорошего дня, моя радость! 🌸<br>Обнимаю тебя!';
+        nextButton.style.display = 'none';
+        hugButton.style.display = 'none';
+        
+        for (let i = 0; i < 20; i++) {
+          setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+            heart.style.animation = `floatUp ${Math.random() * 3 + 2}s linear forwards`;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+          }, i * 200);
+        }
+      }
+    });
+
+    // Обработчик кнопки "Обнять"
+    hugButton.addEventListener('click', createHugEffect);
+
+    // Добавляем CSS анимацию для сердечек
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes floatUp {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Запускаем таймер и обновляем каждую секунду
+    updateRelationshipTimer();
+    setInterval(updateRelationshipTimer, 1000);
+
+    // Случайные летающие сердечки на фоне
+    setInterval(() => {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = ['💖', '💕', '❤️', '🫶'][Math.floor(Math.random() * 4)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.top = '100vh';
+      heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      heart.style.animation = `floatUp ${Math.random() * 5 + 3}s linear forwards`;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }, 2000);
+  </script>
+</body>
+
+</html>
